@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { UserInfoRepository } from '../repositories/user-info.reposiory';
 import { generateToken } from '../../../shared/utils/jwt-token';
+import { UserRegisterResponseDto } from '../types/user-register-response.dto';
 
 @injectable()
 export class UserRegisterHandler {
@@ -18,7 +19,7 @@ export class UserRegisterHandler {
         @inject(TYPES.UserRepository) private userRepository: UserRepository,
         @inject(TYPES.UserInfoRepository) private userInfoRepository: UserInfoRepository,
     ) {}
-    public async registerAsync(input: unknown): Promise<unknown> {
+    public async registerAsync(input: unknown): Promise<UserRegisterResponseDto> {
         let data: CreateUserDto;
         try {
             data = await CreateUserSchema.parseAsync(input);
@@ -64,7 +65,7 @@ export class UserRegisterHandler {
         );
 
         const user = this.userRepository.toSafeUser(created);
-        return {
+        return <UserRegisterResponseDto>{
             user,
             accessToken,
             resetToken,

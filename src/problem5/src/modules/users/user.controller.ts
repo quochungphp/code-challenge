@@ -41,6 +41,10 @@ export class UserController extends BaseHttpController {
      *     responses:
      *       201:
      *         description: User created successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/UserRegisterResponseDto'
      *       400:
      *         description: Invalid input
      */
