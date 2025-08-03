@@ -1,1 +1,4 @@
 node_modules/
+src/problem5/mongo-data/
+src/problem5/dist/
+src/problem5/package-lock.json
