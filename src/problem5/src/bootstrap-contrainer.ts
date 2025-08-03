@@ -2,15 +2,18 @@
 import { Container } from 'inversify';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { ConfigEnv } from './config/config.env';
-import { TYPES } from './boostrap-type';
+import { TYPES } from './bootstrap-type';
 import { AppController } from './modules/app/app.controller';
 import { LoggerService } from './shared/services/logger.service';
 import { MongooseProvider } from './shared/providers/mongoose.provider';
-import { UserRepository } from './modules/users/user.repository';
+import { UserRepository } from './modules/users/repositories/user.repository';
 import { AuthXApiKeyMiddleware } from './shared/middlewares/auth-api-key.middleware';
 import { ErrorHandlerMiddleware } from './shared/middlewares/error-handler.middleware';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { RedisService } from './shared/services/redis.service';
+import { UserController } from './modules/users/user.controller';
+import { UserInfoRepository } from './modules/users/repositories/user-info.reposiory';
+import { UserRegisterHandler } from './modules/users/handlers/user-register.handler';
 
 type Dependency<T> = {
     type: symbol;
@@ -89,6 +92,16 @@ class InversifyContainer extends BaseInversifyContainer {
                 singleton: false,
             },
             {
+                type: TYPES.UserController,
+                class: UserController,
+                singleton: false,
+            },
+            {
+                type: TYPES.UserRegisterHandler,
+                class: UserRegisterHandler,
+                singleton: false,
+            },
+            {
                 type: TYPES.ConfigEnv,
                 class: ConfigEnv,
                 singleton: false,
@@ -128,7 +141,11 @@ class InversifyContainer extends BaseInversifyContainer {
                 class: UserRepository,
                 singleton: false,
             },
-            
+            {
+                type: TYPES.UserInfoRepository,
+                class: UserInfoRepository,
+                singleton: false,
+            },
         ];
         return dependencies;
     }

@@ -1,22 +1,20 @@
 import Redis, { RedisOptions } from 'ioredis';
 import { ConfigEnv } from '../../config/config.env';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../../boostrap-type';
+import { TYPES } from '../../bootstrap-type';
 
 @injectable()
 export class RedisService {
     private readonly redisMaster: Redis;
     private readonly redisReplica: Redis;
 
-    constructor(
-        @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
-    ){
+    constructor(@inject(TYPES.ConfigEnv) private configEnv: ConfigEnv) {
         const {
             redisHost: host,
             redisPort: port,
             redisPassword: password,
             redisReplicaHost,
-            isEnableRedisTLS
+            isEnableRedisTLS,
         } = configEnv;
 
         const option: RedisOptions = {

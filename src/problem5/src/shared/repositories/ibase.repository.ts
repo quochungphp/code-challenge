@@ -1,7 +1,7 @@
 import { Model, Document } from 'mongoose';
 import { IBaseRepository } from './types';
 export class BaseRepository<T extends Document> implements IBaseRepository<T> {
-    protected model: Model<T>;
+    public model: Model<T>;
 
     constructor(model: Model<T>) {
         this.model = model;

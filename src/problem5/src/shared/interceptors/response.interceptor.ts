@@ -5,12 +5,20 @@ export const responseInterceptor = (
     res: Response,
     next: NextFunction,
 ) => {
-    const originalSend = res.send;
+    const originalJson = res.json.bind(res);
 
-    res.send = (body: any): Response => {
+    res.json = (body: any): Response => {
         const success = res.statusCode >= 200 && res.statusCode < 300;
-        const formattedResponse = { data: body, success };
-        return originalSend.call(res, JSON.stringify(formattedResponse));
+        if (
+            body &&
+            typeof body === 'object' &&
+            'success' in body &&
+            'data' in body
+        ) {
+            return originalJson(body);
+        }
+        return originalJson({ success, data: body });
     };
+
     next();
 };

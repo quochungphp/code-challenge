@@ -1,15 +1,12 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { inject, injectable } from 'inversify';
 import { ConfigEnv } from '../../config/config.env';
-import { TYPES } from '../../boostrap-type';
+import { TYPES } from '../../bootstrap-type';
 import { winstonLogger } from '../utils/winston-logger';
-
 
 @injectable()
 export class MongooseProvider {
-    constructor(
-        @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
-    ) {}
+    constructor(@inject(TYPES.ConfigEnv) private configEnv: ConfigEnv) {}
 
     public async connect(): Promise<void> {
         try {

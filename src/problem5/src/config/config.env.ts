@@ -28,7 +28,7 @@ export class ConfigEnv {
 
     private cors(value: string | undefined): string[] | 'all' {
         if (!value || value === 'all') return 'all';
-        return value.split(',').map(v => v.trim());
+        return value.split(',').map((v) => v.trim());
     }
 
     get env(): string {
@@ -48,7 +48,9 @@ export class ConfigEnv {
     }
 
     get isEnableTLSMongoConnect(): boolean {
-        return [ENVIRONMENT.PREPROD, ENVIRONMENT.PRODUCTION].includes(this.env as ENVIRONMENT);
+        return [ENVIRONMENT.PREPROD, ENVIRONMENT.PRODUCTION].includes(
+            this.env as ENVIRONMENT,
+        );
     }
 
     get mongoDbUri(): string {
@@ -60,6 +62,19 @@ export class ConfigEnv {
 
     get jwtSecret(): string {
         return process.env.JWT_SECRET || 'Vjvhyuf77ugjugv7443Rf';
+    }
+
+    get jwtTokenExpire(): string {
+        return process.env.JWT_TOKEN_EXPIRE || '7d';
+    }
+    get passwordSecret(): string {
+        return process.env.PASSWORD_SECRET || 'Vjvhyuf77ugjugv7443Rf';
+    }
+    get saltRounds(): number {
+        return this.int(process.env.SALT_ROUNDS, 10);
+    }
+    get xApiKey(): string {
+        return process.env.X_API_KEY || 'xxxx-xxxx-xxxx-xxxx';
     }
 
     get corsConfig(): CorsOptions {

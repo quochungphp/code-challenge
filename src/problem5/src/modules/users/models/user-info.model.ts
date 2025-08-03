@@ -28,7 +28,7 @@ const UserInfoSchema: Schema = new Schema(
     },
     {
         timestamps: true,
-    }
+    },
 );
 
 UserInfoSchema.pre<UserInfoCollection>('save', function (next) {
@@ -38,4 +38,7 @@ UserInfoSchema.pre<UserInfoCollection>('save', function (next) {
     next();
 });
 
-export const UserInfoModel = mongoose.model<UserInfoCollection>('UserInfo', UserInfoSchema);
+export const UserInfoModel = mongoose.model<UserInfoCollection>(
+    'UserInfo',
+    UserInfoSchema,
+);

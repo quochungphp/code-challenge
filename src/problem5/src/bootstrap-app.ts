@@ -7,15 +7,14 @@ import { InversifyExpressServer } from 'inversify-express-utils';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { ConfigEnv } from './config/config.env';
-import { InversifyContainer } from './boostrap-contrainer';
-import { TYPES } from './boostrap-type';
+import { InversifyContainer } from './bootstrap-contrainer';
+import { TYPES } from './bootstrap-type';
 import { ErrorHandlerMiddleware } from './shared/middlewares/error-handler.middleware';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { MongooseProvider } from './shared/providers/mongoose.provider';
 import { LoggerService } from './shared/services/logger.service';
 import { responseInterceptor } from './shared/interceptors/response.interceptor';
 import { RedisService } from './shared/services/redis.service';
-
 
 export class BootstrapApp {
     private app: express.Application = {} as express.Application;
@@ -110,9 +109,7 @@ export class BootstrapApp {
     public async init(): Promise<void> {
         const { port } = this.configEnv;
         this.app.listen(port, () => {
-            this.logger.info(
-                `Server is running by port: ${port}`,
-            );
+            this.logger.info(`Server is running by port: ${port}`);
         });
     }
     public getServer(): express.Application {

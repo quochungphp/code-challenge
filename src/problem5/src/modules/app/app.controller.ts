@@ -1,4 +1,3 @@
- 
 import { inject } from 'inversify';
 import {
     controller,
@@ -8,7 +7,7 @@ import {
     StringContent,
 } from 'inversify-express-utils';
 import { ConfigEnv } from '../../config/config.env';
-import { TYPES } from '../../boostrap-type';
+import { TYPES } from '../../bootstrap-type';
 /**
  * @swagger
  * tags:
@@ -17,9 +16,7 @@ import { TYPES } from '../../boostrap-type';
  */
 @controller('/')
 export class AppController extends BaseHttpController {
-    constructor(
-        @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
-    ) {
+    constructor(@inject(TYPES.ConfigEnv) private configEnv: ConfigEnv) {
         super();
     }
     /**
