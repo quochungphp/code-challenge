@@ -9,9 +9,7 @@ export class LoggerService {
     private logger: Logger;
     private context: string;
 
-    constructor(
-        @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
-    ) {
+    constructor(@inject(TYPES.ConfigEnv) private configEnv: ConfigEnv) {
         const isProduction = this.configEnv.env === 'production';
 
         this.logger = createLogger({
@@ -22,9 +20,11 @@ export class LoggerService {
                 format.splat(),
                 format.printf(({ level, message, timestamp, ...meta }) => {
                     const context = meta.context ? `[${meta.context}]` : '';
-                    const rest = Object.keys(meta).length ? JSON.stringify(meta) : '';
+                    const rest = Object.keys(meta).length
+                        ? JSON.stringify(meta)
+                        : '';
                     return `${timestamp} ${level} ${context}: ${message} ${rest}`;
-                })
+                }),
             ),
             transports: [
                 new transports.Console({
@@ -40,13 +40,24 @@ export class LoggerService {
         this.context = context;
     }
 
-    private log(level: 'info' | 'debug' | 'error' | 'warn', message: any, meta?: Record<string, any>) {
+    private log(
+        level: 'info' | 'debug' | 'error' | 'warn',
+        message: any,
+        meta?: Record<string, any>,
+    ) {
         const baseMeta = { context: this.context };
 
         if (message instanceof Error) {
-            this.logger.log(level, message.message, { ...baseMeta, stack: message.stack, ...meta });
+            this.logger.log(level, message.message, {
+                ...baseMeta,
+                stack: message.stack,
+                ...meta,
+            });
         } else if (typeof message === 'object') {
-            this.logger.log(level, JSON.stringify(message), { ...baseMeta, ...meta });
+            this.logger.log(level, JSON.stringify(message), {
+                ...baseMeta,
+                ...meta,
+            });
         } else {
             this.logger.log(level, message, { ...baseMeta, ...meta });
         }

@@ -55,7 +55,10 @@ export class UserController extends BaseHttpController {
             const user = await this.userRegisterHandler.registerAsync(req.body);
             return this.json(user, StatusCodes.CREATED);
         } catch (error: any) {
-            this.loggerService.error('UserController.registerUser error:', error);
+            this.loggerService.error(
+                'UserController.registerUser error:',
+                error,
+            );
             return this.json(error, StatusCodes.BAD_REQUEST);
         }
     }

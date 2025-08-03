@@ -1,5 +1,3 @@
- 
- 
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../../bootstrap-type';
 import { UserRepository } from '../repositories/user.repository';
@@ -17,9 +15,12 @@ export class UserRegisterHandler {
     constructor(
         @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
         @inject(TYPES.UserRepository) private userRepository: UserRepository,
-        @inject(TYPES.UserInfoRepository) private userInfoRepository: UserInfoRepository,
+        @inject(TYPES.UserInfoRepository)
+        private userInfoRepository: UserInfoRepository,
     ) {}
-    public async registerAsync(input: unknown): Promise<UserRegisterResponseDto> {
+    public async registerAsync(
+        input: unknown,
+    ): Promise<UserRegisterResponseDto> {
         let data: CreateUserDto;
         try {
             data = await CreateUserSchema.parseAsync(input);
@@ -47,22 +48,16 @@ export class UserRegisterHandler {
         data.passwordSecret =
             passwordSecret + crypto.randomBytes(32).toString('hex');
         const created = await this.userRepository.create(data);
-        const userSession = await this.userInfoRepository.createUserInfo(created.id);
+        const userSession = await this.userInfoRepository.createUserInfo(
+            created.id,
+        );
         const payload = {
             userId: created._id,
             userName: created.userName,
-            userSession
+            userSession,
         };
-        const accessToken = generateToken(
-            jwtSecret,
-            payload,
-            jwtTokenExpire,
-        );
-        const resetToken = generateToken(
-            jwtSecret,
-            payload,
-            jwtTokenExpire,
-        );
+        const accessToken = generateToken(jwtSecret, payload, jwtTokenExpire);
+        const resetToken = generateToken(jwtSecret, payload, jwtTokenExpire);
 
         const user = this.userRepository.toSafeUser(created);
         return <UserRegisterResponseDto>{

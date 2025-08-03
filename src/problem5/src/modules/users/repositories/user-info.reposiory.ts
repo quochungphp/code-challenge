@@ -14,14 +14,11 @@ export class UserInfoRepository extends BaseRepository<UserInfoCollection> {
         userId: Types.ObjectId,
         sessionId?: string,
     ): Promise<UserInfoCollection> {
-        console.log(userId)
-
         const userInfo = new this.model({
             userId,
             sessionId: sessionId ?? uuidv4(),
-            secretKey: crypto.randomBytes(32).toString('hex')
+            secretKey: crypto.randomBytes(32).toString('hex'),
         });
-        console.log(userInfo)
         return await userInfo.save();
     }
     async findBySessionId(

@@ -1,11 +1,9 @@
 import * as dotenv from 'dotenv';
 import * as dotenvExpand from 'dotenv-expand';
+dotenvExpand.expand(dotenv.config());
 import { injectable } from 'inversify';
 import { CorsOptions } from 'cors';
 
-// Load and expand .env
-const env = dotenv.config();
-dotenvExpand.expand(env);
 
 export enum ENVIRONMENT {
     STAGING = 'staging',
