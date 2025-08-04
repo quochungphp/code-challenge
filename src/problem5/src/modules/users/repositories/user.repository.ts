@@ -8,6 +8,9 @@ export class UserRepository extends BaseRepository<UserCollection> {
     constructor() {
         super(UserModel);
     }
+    async initIndexes(): Promise<void> {
+        await this.model.syncIndexes();
+    }
     async findByName(name: string): Promise<UserCollection | null> {
         return this.model.findOne({ name }).exec();
     }

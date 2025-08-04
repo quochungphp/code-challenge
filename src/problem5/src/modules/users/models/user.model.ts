@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+
 export interface UserCollection extends Document {
     fullName: string;
     userName: string;
@@ -20,5 +21,7 @@ const UserSchema: Schema = new Schema(
         timestamps: true,
     },
 );
+
+UserSchema.index({ userName: 1, createdAt: -1 });
 
 export const UserModel = mongoose.model<UserCollection>('User', UserSchema);

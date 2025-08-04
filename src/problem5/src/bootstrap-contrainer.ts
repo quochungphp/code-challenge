@@ -24,10 +24,12 @@ type Dependency<T> = {
     type: symbol;
     class: new (...args: any[]) => T; // Generic class constructor
     singleton: boolean;
+    initMethod?: keyof T; // optional initializer method
 };
 abstract class BaseInversifyContainer {
     protected configEnv: ConfigEnv;
     protected container: Container;
+    private initializables: { type: symbol; method: string }[] = [];
 
     constructor() {
         this.container = new Container();
@@ -39,10 +41,24 @@ abstract class BaseInversifyContainer {
             const c = de.class as any;
             if (de.singleton) {
                 this.container.bind<typeof c>(t).to(c).inSingletonScope();
-                continue;
+            } else {
+                this.container.bind<typeof c>(t).to(c);
             }
 
-            this.container.bind<typeof c>(t).to(c);
+            if (de.initMethod) {
+                this.initializables.push({
+                    type: t,
+                    method: de.initMethod as string,
+                });
+            }
+        }
+    }
+    public async initializeAsync(): Promise<void> {
+        for (const { type, method } of this.initializables) {
+            const instance = this.container.get<any>(type);
+            if (typeof instance[method] === 'function') {
+                await instance[method]();
+            }
         }
     }
 }
@@ -171,6 +187,7 @@ class InversifyContainer extends BaseInversifyContainer {
                 type: TYPES.UserRepository,
                 class: UserRepository,
                 singleton: false,
+                initMethod: 'initIndexes',
             },
             {
                 type: TYPES.UserInfoRepository,

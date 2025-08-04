@@ -17,7 +17,6 @@ export class UserListHandler {
         if (fullName) filters.fullName = { $regex: fullName, $options: 'i' };
 
         const skip = (page - 1) * limit;
-        
         // TODO: apply cache first based on query
 
         const [total, users] = await Promise.all([
