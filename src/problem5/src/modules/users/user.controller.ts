@@ -43,7 +43,7 @@ export class UserController extends BaseHttpController {
 
     /**
      * @swagger
-     * /users/register:
+     * /users:
      *   post:
      *     summary: Register a new user
      *     tags: [Users]
@@ -70,6 +70,7 @@ export class UserController extends BaseHttpController {
             const user = await this.userRegisterHandler.registerAsync(req.body);
             return this.json(user, StatusCodes.CREATED);
         } catch (error: any) {
+            console.log('--------', error);
             this.loggerService.error(
                 'UserController.registerUser error:',
                 error,

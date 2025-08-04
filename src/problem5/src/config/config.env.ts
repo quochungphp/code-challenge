@@ -78,9 +78,14 @@ export class ConfigEnv {
     }
     get corsConfig(): CorsOptions {
         return {
-            origin: this.cors(process.env.CORS_ORIGINS),
+            origin: this.cors(process.env.CORS_ORIGINS || '*'),
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization'],
+            allowedHeaders: [
+                'Content-Type',
+                'Authorization',
+                'x-api-key',
+                'x-admin-api-key',
+            ],
             credentials: true,
         };
     }

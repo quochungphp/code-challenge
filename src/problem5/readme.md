@@ -67,9 +67,15 @@ npm install
 npm run start
 ```
 
-### 3. Bash test
+### 3.  Test
+
+```bash
+  npm run test:local
 ```
-curl --location 'localhost:3001/users/register' \
+
+Test by CURL
+```
+curl --location 'localhost:3001/users' \
 --header 'Content-Type: application/json' \
 --header 'x-api-key: xxxx-xxxx-xxxx-xxxx' \
 --data '{
@@ -79,3 +85,6 @@ curl --location 'localhost:3001/users/register' \
 }
 '
 ```
+
+### 4. Swagger
+- http://localhost:3001/api-docs/#/Users/post_users

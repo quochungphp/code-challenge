@@ -9,11 +9,14 @@ import crypto from 'crypto';
 import { UserInfoRepository } from '../repositories/user-info.reposiory';
 import { generateToken } from '../../../shared/utils/jwt-token';
 import { UserRegisterResponseDto } from '../types/user-register-response.dto';
+import { RedisService } from '../../../shared/services/redis.service';
+import { sessionIdCacheKey } from '../../../shared/utils/generate-key';
 
 @injectable()
 export class UserRegisterHandler {
     constructor(
         @inject(TYPES.ConfigEnv) private configEnv: ConfigEnv,
+        @inject(TYPES.RedisService) private redisService: RedisService,
         @inject(TYPES.UserRepository) private userRepository: UserRepository,
         @inject(TYPES.UserInfoRepository)
         private userInfoRepository: UserInfoRepository,
@@ -56,6 +59,9 @@ export class UserRegisterHandler {
             userName: created.userName,
             userSession,
         };
+        const redisKey = sessionIdCacheKey(`${created._id}`);
+        await this.redisService.setValue(redisKey, JSON.stringify(payload));
+
         const accessToken = generateToken(jwtSecret, payload, jwtTokenExpire);
         const resetToken = generateToken(jwtSecret, payload, jwtTokenExpire);
 

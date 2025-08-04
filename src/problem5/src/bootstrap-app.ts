@@ -9,6 +9,7 @@ import swaggerUi from 'swagger-ui-express';
 import { ConfigEnv } from './config/config.env';
 import { InversifyContainer } from './bootstrap-contrainer';
 import { TYPES } from './bootstrap-type';
+import swaggerJSDoc from 'swagger-jsdoc';
 import { ErrorHandlerMiddleware } from './shared/middlewares/error-handler.middleware';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { MongooseProvider } from './shared/providers/mongoose.provider';
@@ -30,13 +31,14 @@ export class BootstrapApp {
         this.configEnv = new ConfigEnv();
         const IContainer = new InversifyContainer();
         this.container = IContainer.getContainer();
-        this.swaggerDocs = IContainer.getSwaggerDocs();
         this.logger = new LoggerService(this.configEnv);
     }
+
     public getAppContainer() {
         return this.container;
     }
-    public async initProviders(): Promise<void> {
+
+    private async initProviders(): Promise<void> {
         try {
             const mongoProvider = this.container.get<MongooseProvider>(
                 TYPES.MongooseProvider,
@@ -48,7 +50,7 @@ export class BootstrapApp {
         }
     }
 
-    public async initDependencies(): Promise<void> {
+    private async initDependencies(): Promise<void> {
         const redis = this.container.get<RedisService>(TYPES.RedisService);
         redis.reader
             .on('connect', () => {
@@ -60,15 +62,68 @@ export class BootstrapApp {
             });
     }
 
+    public getSwaggerDocs() {
+        const swaggerOptions = {
+            definition: {
+                openapi: '3.0.0',
+                info: {
+                    title: 'Problem5 docs',
+                    version: '1.0.0',
+                    description: 'Auto-generated API docs',
+                },
+                servers: [
+                    {
+                        url: 'http://localhost:3001',
+                        description: 'Local dev server',
+                    },
+                ],
+                components: {
+                    securitySchemes: {
+                        ApiKeyAuth: {
+                            type: 'apiKey',
+                            in: 'header',
+                            name: 'x-api-key',
+                        },
+                        BearerAuth: {
+                            type: 'http',
+                            scheme: 'bearer',
+                            bearerFormat: 'JWT',
+                        },
+                        XAdminApiKey: {
+                            type: 'apiKey',
+                            in: 'header',
+                            name: 'x-admin-api-key',
+                        },
+                    },
+                },
+            },
+            security: [
+                { BearerAuth: [] },
+                { XAdminApiKey: [] },
+                { ApiKeyAuth: [] },
+            ],
+            apis: [
+                process.env.NODE_ENV === 'production'
+                    ? 'dist/**/*.js'
+                    : 'src/**/*.ts',
+            ],
+        };
+
+        return swaggerJSDoc(swaggerOptions);
+    }
+
     public async setup(): Promise<BootstrapApp> {
         await this.initProviders();
         await this.initDependencies();
-        // create server
+
+        this.swaggerDocs = this.getSwaggerDocs();
+
         const server = new InversifyExpressServer(this.container);
         server.setConfig((app: express.Application) => {
             const loggerMiddleware = this.container.get<LoggerMiddleware>(
                 TYPES.LoggerMiddleware,
             );
+
             app.use(
                 bodyParser.urlencoded({
                     extended: true,
@@ -79,17 +134,20 @@ export class BootstrapApp {
             app.use(express.json());
             app.use(express.urlencoded({ extended: true }));
             app.use(
-                '/v1/api-docs',
+                '/api-docs',
                 swaggerUi.serve,
-                swaggerUi.setup(this.swaggerDocs),
+                swaggerUi.setup(this.swaggerDocs, {
+                    explorer: true,
+                    customSiteTitle: 'Problem5 swagger',
+                }),
             );
-            // Global middlewares
+
             app.use((req, res, next) =>
                 loggerMiddleware.handler(req, res, next),
             );
-            // Global interceptors
             app.use(responseInterceptor);
         });
+
         server.setErrorConfig((app) => {
             const errorHandlerMiddleware =
                 this.container.get<ErrorHandlerMiddleware>(
@@ -112,6 +170,7 @@ export class BootstrapApp {
             this.logger.info(`Server is running by port: ${port}`);
         });
     }
+
     public getServer(): express.Application {
         return this.app;
     }

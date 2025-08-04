@@ -3,6 +3,7 @@ import {
     SetupContinuousIntegrationTest,
     setupContinuousIntegrationTest,
 } from '../../../shared/utils/setup-ci-integration';
+import { sessionIdCacheKey } from '../../../shared/utils/generate-key';
 
 describe('UserController', () => {
     let appContext: SetupContinuousIntegrationTest;
@@ -35,13 +36,30 @@ describe('UserController', () => {
 
         it('should return user info when request register user', async () => {
             const response = await supertest(appContext.app.getServer())
-                .post('/users/register')
+                .post('/users')
                 .set('x-api-key', appContext.configEnv.xApiKey)
                 .send({
                     fullName: 'User test',
                     userName: 'userTest',
                     password: 'SuperSecure123!',
                 });
+            // Cached  user create / login as a first time login
+            const id = response.body.data.user.id;
+            const cached = await appContext.redisService.getValue(
+                sessionIdCacheKey(id),
+            );
+            expect(JSON.parse(cached as string)).toMatchObject({
+                userId: expect.any(String),
+                userName: 'userTest',
+                userSession: {
+                    userId: expect.any(String),
+                    sessionId: expect.any(String),
+                    secretKey: expect.any(String),
+                    createdAt: expect.any(String),
+                    updatedAt: expect.any(String),
+                    __v: 0,
+                },
+            });
             expect(response.body).toMatchObject({
                 success: true,
                 data: {
