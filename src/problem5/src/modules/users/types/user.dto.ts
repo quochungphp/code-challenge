@@ -15,6 +15,7 @@ export const CreateUserSchema = z.object({
 
 export const UpdateUserSchema = CreateUserSchema.omit({
     userName: true,
+    passwordSecret: true,
 }).partial(); // All remaining fields optional
 
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;

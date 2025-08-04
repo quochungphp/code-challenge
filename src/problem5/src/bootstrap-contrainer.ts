@@ -14,6 +14,10 @@ import { RedisService } from './shared/services/redis.service';
 import { UserController } from './modules/users/user.controller';
 import { UserInfoRepository } from './modules/users/repositories/user-info.reposiory';
 import { UserRegisterHandler } from './modules/users/handlers/user-register.handler';
+import { UserDeleteHandler } from './modules/users/handlers/user-delete.handler';
+import { UserUpdateHandler } from './modules/users/handlers/user-update.handler';
+import { UserInfoHandler } from './modules/users/handlers/user-info.handler';
+import { AuthXAdminApiKeyMiddleware } from './shared/middlewares/auth-admin-api-key.middleware';
 
 type Dependency<T> = {
     type: symbol;
@@ -102,6 +106,21 @@ class InversifyContainer extends BaseInversifyContainer {
                 singleton: false,
             },
             {
+                type: TYPES.UserDeleteHandler,
+                class: UserDeleteHandler,
+                singleton: false,
+            },
+            {
+                type: TYPES.UserUpdateHandler,
+                class: UserUpdateHandler,
+                singleton: false,
+            },
+            {
+                type: TYPES.UserInfoHandler,
+                class: UserInfoHandler,
+                singleton: false,
+            },
+            {
                 type: TYPES.ConfigEnv,
                 class: ConfigEnv,
                 singleton: false,
@@ -129,6 +148,11 @@ class InversifyContainer extends BaseInversifyContainer {
             {
                 type: TYPES.AuthXApiKeyMiddleware,
                 class: AuthXApiKeyMiddleware,
+                singleton: false,
+            },
+            {
+                type: TYPES.AuthXAdminApiKeyMiddleware,
+                class: AuthXAdminApiKeyMiddleware,
                 singleton: false,
             },
             {

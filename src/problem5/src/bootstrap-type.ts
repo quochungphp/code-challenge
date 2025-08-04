@@ -15,9 +15,13 @@ export const TYPES = {
     // Interceptor
     ResponseInterceptor: Symbol.for('ResponseInterceptor'),
     AuthXApiKeyMiddleware: Symbol.for('AuthXApiKeyMiddleware'),
+    AuthXAdminApiKeyMiddleware: Symbol.for('AuthXAdminApiKeyMiddleware'),
     ErrorHandlerMiddleware: Symbol.for('ErrorHandlerMiddleware'),
 
     // Handlers
     // |__Users
     UserRegisterHandler: Symbol.for('UserRegisterHandler'),
+    UserInfoHandler: Symbol.for('UserInfoHandler'),
+    UserUpdateHandler: Symbol.for('UserUpdateHandler'),
+    UserDeleteHandler: Symbol.for('UserDeleteHandler'),
 };

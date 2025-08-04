@@ -29,7 +29,7 @@ export class UserRegisterHandler {
                 throw {
                     status: 400,
                     message: 'Validation failed',
-                    issues: err.errors,
+                    errors: err.errors,
                 };
             }
             throw err;

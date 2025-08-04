@@ -30,7 +30,7 @@ export async function setupContinuousIntegrationTest(): Promise<SetupContinuousI
     const mongoProvider = container.get<MongooseProvider>(
         TYPES.MongooseProvider,
     );
-    const configEnv = container.get<ConfigEnv>(TYPES.ConfigEnv)
+    const configEnv = container.get<ConfigEnv>(TYPES.ConfigEnv);
     const redisService = container.get<RedisService>(TYPES.RedisService);
 
     return {

@@ -4,7 +4,6 @@ dotenvExpand.expand(dotenv.config());
 import { injectable } from 'inversify';
 import { CorsOptions } from 'cors';
 
-
 export enum ENVIRONMENT {
     STAGING = 'staging',
     PREPROD = 'preprod',
@@ -74,7 +73,9 @@ export class ConfigEnv {
     get xApiKey(): string {
         return process.env.X_API_KEY || 'xxxx-xxxx-xxxx-xxxx';
     }
-
+    get xAdminApiKey(): string {
+        return process.env.X_ADMIN_API_KEY || 'xxxx-xxxx-xxxx-xxxx';
+    }
     get corsConfig(): CorsOptions {
         return {
             origin: this.cors(process.env.CORS_ORIGINS),
