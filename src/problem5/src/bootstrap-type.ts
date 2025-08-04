@@ -24,4 +24,5 @@ export const TYPES = {
     UserInfoHandler: Symbol.for('UserInfoHandler'),
     UserUpdateHandler: Symbol.for('UserUpdateHandler'),
     UserDeleteHandler: Symbol.for('UserDeleteHandler'),
+    UserListHandler: Symbol.for('UserListHandler'),
 };

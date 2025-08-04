@@ -10,6 +10,7 @@ import {
     requestParam,
     withMiddleware,
     httpPut,
+    queryParam,
 } from 'inversify-express-utils';
 import { TYPES } from '../../bootstrap-type';
 import { StatusCodes } from 'http-status-codes';
@@ -18,6 +19,8 @@ import { UserRegisterHandler } from './handlers/user-register.handler';
 import { UserDeleteHandler } from './handlers/user-delete.handler';
 import { UserUpdateHandler } from './handlers/user-update.handler';
 import { UserInfoHandler } from './handlers/user-info.handler';
+import { GetUsersQuerySchema } from './types/user.dto';
+import { UserListHandler } from './handlers/user-list.handler';
 
 /**
  * @swagger
@@ -37,6 +40,8 @@ export class UserController extends BaseHttpController {
         private userUpdateHandler: UserUpdateHandler,
         @inject(TYPES.UserInfoHandler)
         private userInfoHandler: UserInfoHandler,
+        @inject(TYPES.UserListHandler)
+        private userListHandler: UserListHandler,
     ) {
         super();
     }
@@ -70,7 +75,6 @@ export class UserController extends BaseHttpController {
             const user = await this.userRegisterHandler.registerAsync(req.body);
             return this.json(user, StatusCodes.CREATED);
         } catch (error: any) {
-            console.log('--------', error);
             this.loggerService.error(
                 'UserController.registerUser error:',
                 error,
@@ -179,6 +183,67 @@ export class UserController extends BaseHttpController {
             return this.json(result, StatusCodes.OK);
         } catch (error: any) {
             this.loggerService.error('UserController.getUser error:', error);
+            return this.json(error, error.status || StatusCodes.BAD_REQUEST);
+        }
+    }
+    /**
+     * @swagger
+     * /users:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Get list of users
+     *     description: Get a paginated list of users with optional filters.
+     *     parameters:
+     *       - in: query
+     *         name: page
+     *         schema:
+     *           type: integer
+     *           default: 1
+     *         description: Page number
+     *       - in: query
+     *         name: limit
+     *         schema:
+     *           type: integer
+     *           default: 10
+     *         description: Number of users per page
+     *       - in: query
+     *         name: userName
+     *         schema:
+     *           type: string
+     *         description: Filter by userName (partial match)
+     *       - in: query
+     *         name: fullName
+     *         schema:
+     *           type: string
+     *         description: Filter by fullName (partial match)
+     *     responses:
+     *       200:
+     *         description: Successful response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 total:
+     *                   type: integer
+     *                 page:
+     *                   type: integer
+     *                 limit:
+     *                   type: integer
+     *                 users:
+     *                   type: array
+     *                   items:
+     *                     $ref: '#/components/schemas/User'
+     */
+    @httpGet('/')
+    @withMiddleware(TYPES.AuthXAdminApiKeyMiddleware)
+    public async getUsers(@queryParam() query: any) {
+        try {
+            const parsedQuery = GetUsersQuerySchema.parse(query);
+            return this.userListHandler.execute(parsedQuery);
+        } catch (error: any) {
+            this.loggerService.error('UserController.getUsers error:', error);
             return this.json(error, error.status || StatusCodes.BAD_REQUEST);
         }
     }

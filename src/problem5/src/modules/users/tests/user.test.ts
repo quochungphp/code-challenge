@@ -150,5 +150,41 @@ describe('UserController', () => {
                 data: { message: 'User deleted' },
             });
         });
+
+        it('should return list of users with pagination and filter', async () => {
+            const users = [
+                { fullName: 'User One', userName: 'user1' },
+                { fullName: 'User Two', userName: 'user2' },
+                { fullName: 'User Three', userName: 'user3' },
+                { fullName: 'User Four', userName: 'user4' },
+                { fullName: 'User Five', userName: 'user5' },
+            ];
+
+            for (const user of users) {
+                await supertest(appContext.app.getServer())
+                    .post('/users')
+                    .set('x-api-key', appContext.configEnv.xApiKey)
+                    .send({
+                        ...user,
+                        password: 'Password123!',
+                    });
+            }
+
+            const listRes = await supertest(appContext.app.getServer())
+                .get(`/users?page=1&limit=3`)
+                .set('x-admin-api-key', appContext.configEnv.xAdminApiKey);
+            expect(listRes.status).toBe(200);
+            expect(listRes.body.data.items.length).toBeLessThanOrEqual(3);
+            expect(listRes.body.data.total).toBe(5);
+            expect(listRes.body.success).toBe(true);
+
+            const filterRes = await supertest(appContext.app.getServer())
+                .get(`/users?userName=user3`)
+                .set('x-admin-api-key', appContext.configEnv.xAdminApiKey);
+
+            expect(filterRes.status).toBe(200);
+            expect(filterRes.body.data.items.length).toBe(1);
+            expect(filterRes.body.data.items[0].userName).toBe('user3');
+        });
     });
 });

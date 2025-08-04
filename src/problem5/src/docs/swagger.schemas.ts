@@ -47,4 +47,21 @@
  *           type: string
  *         resetToken:
  *           type: string
+ *     GetUsersQuery:
+ *       type: object
+ *       properties:
+ *         page:
+ *           type: integer
+ *           default: 1
+ *           description: Page number
+ *         limit:
+ *           type: integer
+ *           default: 10
+ *           description: Items per page
+ *         userName:
+ *           type: string
+ *           description: Filter by userName
+ *         fullName:
+ *           type: string
+ *           description: Filter by fullName
  */

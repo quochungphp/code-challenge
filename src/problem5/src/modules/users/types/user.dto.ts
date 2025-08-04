@@ -18,5 +18,13 @@ export const UpdateUserSchema = CreateUserSchema.omit({
     passwordSecret: true,
 }).partial(); // All remaining fields optional
 
+export const GetUsersQuerySchema = z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    userName: z.string().optional(),
+    fullName: z.string().email().optional(),
+});
+
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
+export type GetUsersQueryDto = z.infer<typeof GetUsersQuerySchema>;

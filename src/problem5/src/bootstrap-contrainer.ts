@@ -18,6 +18,7 @@ import { UserDeleteHandler } from './modules/users/handlers/user-delete.handler'
 import { UserUpdateHandler } from './modules/users/handlers/user-update.handler';
 import { UserInfoHandler } from './modules/users/handlers/user-info.handler';
 import { AuthXAdminApiKeyMiddleware } from './shared/middlewares/auth-admin-api-key.middleware';
+import { UserListHandler } from './modules/users/handlers/user-list.handler';
 
 type Dependency<T> = {
     type: symbol;
@@ -115,6 +116,12 @@ class InversifyContainer extends BaseInversifyContainer {
                 class: UserUpdateHandler,
                 singleton: false,
             },
+            {
+                type: TYPES.UserListHandler,
+                class: UserListHandler,
+                singleton: false,
+            },
+
             {
                 type: TYPES.UserInfoHandler,
                 class: UserInfoHandler,

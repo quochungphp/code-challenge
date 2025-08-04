@@ -87,4 +87,16 @@ curl --location 'localhost:3001/users' \
 ```
 
 ### 4. Swagger
+
 - http://localhost:3001/api-docs/#/Users/post_users
+
+### 5. TODO
+
+If I have enough time I will do all.
+
+- Custom exception
+- Apply cache
+- Login
+- Path Token
+- Rate limiter
+- Advanced security
