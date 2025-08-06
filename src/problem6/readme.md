@@ -21,8 +21,14 @@ This module provides real-time score updates for an online game scoreboard. It a
 - **Game Board** is joined via WS events, updating the UI in real time using Redis PubSub to broadcast score changes.
 - **Redis** stores session state and caches leaderboard results.
 
+Draw io
+https://drive.google.com/file/d/1ORiTXZNRVWNcdyA6b9Uvvd4QvFeJXdXR/view?usp=sharing
+
+Solution 1
 ![Flow Diagram]![alt text](<Screenshot 2025-08-05 at 9.26.36 PM.png>)
 
+Solution 2
+![Flow Diagram]![alt text](<Screenshot 2025-08-06 at 11.20.52 AM.png>)
 ---
 
 ## 🔄 Flow Summary
