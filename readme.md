@@ -13,5 +13,5 @@ Please: Run & Test
 node v20
 ```
     npm i
-    npm test src/problem1/test.js
+    npm test src/problem4/test.js
 ```
