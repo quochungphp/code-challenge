@@ -52,6 +52,8 @@ export class UserController extends BaseHttpController {
      *   post:
      *     summary: Register a new user
      *     tags: [Users]
+     *     security:
+     *       - ApiKeyAuth: []
      *     requestBody:
      *       required: true
      *       content:
@@ -89,6 +91,8 @@ export class UserController extends BaseHttpController {
      *   delete:
      *     summary: Delete a user by ID
      *     tags: [Users]
+     *     security:
+     *       - AdminApiKeyAuth: []
      *     parameters:
      *       - in: path
      *         name: id
@@ -119,6 +123,8 @@ export class UserController extends BaseHttpController {
      *   patch:
      *     summary: Update a user by ID
      *     tags: [Users]
+     *     security:
+     *       - ApiKeyAuth: []
      *     parameters:
      *       - in: path
      *         name: id
@@ -159,6 +165,8 @@ export class UserController extends BaseHttpController {
      *   get:
      *     summary: Get user info by ID
      *     tags: [Users]
+     *     security:
+     *       - ApiKeyAuth: []
      *     parameters:
      *       - in: path
      *         name: id
@@ -192,6 +200,8 @@ export class UserController extends BaseHttpController {
      *   get:
      *     tags:
      *       - Users
+     *     security:
+     *       - AdminApiKeyAuth: []
      *     summary: Get list of users
      *     description: Get a paginated list of users with optional filters.
      *     parameters:

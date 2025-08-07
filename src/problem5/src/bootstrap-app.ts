@@ -89,7 +89,7 @@ export class BootstrapApp {
                             scheme: 'bearer',
                             bearerFormat: 'JWT',
                         },
-                        XAdminApiKey: {
+                        AdminApiKeyAuth: {
                             type: 'apiKey',
                             in: 'header',
                             name: 'x-admin-api-key',
